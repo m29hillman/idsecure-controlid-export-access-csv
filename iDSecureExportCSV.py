@@ -1,8 +1,16 @@
 import time
+import shutil
+from os import listdir
+from os.path import isfile, join, basename
 from datetime import datetime, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+
+#PASTA DE ORIGEM
+origem = 'C:/Users/usuario/Downloads' 
+#PASTA DE REDE
+destino = '\\\\caminho.rede.com.br\\pasta'
 
 #DEFINIDO FILTRA PELA DATA DO DIA ANTERIOR
 presentday = datetime.now() 
@@ -63,3 +71,17 @@ btnExporta.click()
 time.sleep(2.5)
 btnGeraCsv = navegador.find_element(By.ID, "btn_export_csv")
 btnGeraCsv.click()
+
+time.sleep(5)
+
+#FECHA NAVEGADOR
+navegador.close()
+
+time.sleep(2.5)
+
+#COPIA CSV PARA A PASTA INFORMADA
+for item in [join(origem, f) for f in listdir(origem) if isfile(join(origem, f)) and f.endswith('csv')]:
+    #print(item)
+    shutil.move(item, join(destino, basename(item)))
+    print('moved "{}" -> "{}"'.format(item, join(destino, basename(item))))
+
